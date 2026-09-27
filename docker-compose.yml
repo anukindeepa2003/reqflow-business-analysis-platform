@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: reqflow-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-reqflow}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-reqflow_dev_password}
+      POSTGRES_DB: ${POSTGRES_DB:-reqflow}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - reqflow_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-reqflow} -d ${POSTGRES_DB:-reqflow}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  reqflow_postgres_data:
