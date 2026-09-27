@@ -18,7 +18,7 @@ Detailed functional and non-functional software requirements will be developed a
 
 | ID | Business requirement | Rationale | MVP status |
 | --- | --- | --- | --- |
-| BR-001 | The solution shall provide a centralized workspace for project requirement information. | Reduces fragmentation across simulated documents and spreadsheets. | Planned |
+| BR-001 | The solution shall provide a centralized workspace for project requirement information. | Reduces fragmentation across simulated documents and spreadsheets. | Partially implemented: project workspaces only |
 | BR-002 | The solution shall preserve relationships among projects, requirements, acceptance criteria, and test cases. | Supports context and end-to-end traceability. | Planned |
 | BR-003 | The solution shall enable requirements to be classified, prioritized, and tracked by status. | Supports analysis and delivery planning. | Planned |
 | BR-004 | The solution shall show which test cases are linked to each requirement. | Makes test coverage inspectable. | Planned |
@@ -40,7 +40,7 @@ Detailed functional and non-functional software requirements will be developed a
 8. Basic project statistics calculated from persisted records.
 9. Basic change history for requirement updates.
 
-Phase 1 implements the application foundation, navigation placeholders, and API health endpoint only.
+Phase 1 implemented the application foundation and API health endpoint. Phase 2 implements persisted Project creation, listing, viewing through the project list, editing, status tracking, and confirmed deletion. Requirement content inside a project remains planned.
 
 ## 5. Out-of-scope features
 

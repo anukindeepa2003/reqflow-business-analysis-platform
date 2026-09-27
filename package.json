@@ -15,7 +15,9 @@
     "test": "npm run test --workspaces --if-present",
     "test:watch": "npm run test:watch --workspace @reqflow/api",
     "prisma:generate": "node --env-file=.env apps/api/node_modules/prisma/build/index.js generate --schema apps/api/prisma/schema.prisma",
-    "prisma:validate": "node --env-file=.env apps/api/node_modules/prisma/build/index.js validate --schema apps/api/prisma/schema.prisma"
+    "prisma:validate": "node --env-file=.env apps/api/node_modules/prisma/build/index.js validate --schema apps/api/prisma/schema.prisma",
+    "prisma:migrate:dev": "node --env-file=.env apps/api/node_modules/prisma/build/index.js migrate dev --schema apps/api/prisma/schema.prisma",
+    "prisma:migrate:deploy": "node --env-file=.env apps/api/node_modules/prisma/build/index.js migrate deploy --schema apps/api/prisma/schema.prisma"
   },
   "engines": {
     "node": ">=20.19.0",

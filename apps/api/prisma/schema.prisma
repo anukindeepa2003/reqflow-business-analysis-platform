@@ -7,6 +7,24 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// Phase 1 intentionally contains no application models.
-// The planned entities and integrity rules are documented in
-// docs/architecture/database-design.md and will be implemented in an approved phase.
+enum ProjectStatus {
+  PLANNING
+  ACTIVE
+  ON_HOLD
+  COMPLETED
+  ARCHIVED
+
+  @@map("project_status")
+}
+
+model Project {
+  id          String        @id @default(uuid()) @db.Uuid
+  name        String        @db.Text
+  description String?       @db.Text
+  status      ProjectStatus @default(PLANNING)
+  createdAt   DateTime      @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt   DateTime      @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@index([status, updatedAt(sort: Desc)], map: "projects_status_updated_at_idx")
+  @@map("projects")
+}

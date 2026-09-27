@@ -2,11 +2,11 @@
 
 ## Status and scope
 
-This document describes the Phase 1 foundation and the intended architectural direction for later MVP phases. Components not yet implemented are labelled as planned.
+This document describes the foundation and the Phase 2 Project-management slice. Components not yet implemented are labelled as planned.
 
 ## System context
 
-ReqFlow is a local-first browser application. A React single-page application sends HTTP requests to an Express REST API. The API will use Prisma to access PostgreSQL once domain models are approved and implemented.
+ReqFlow is a local-first browser application. A React single-page application sends HTTP requests to an Express REST API. The Project API uses Prisma to access PostgreSQL; later domain modules will follow the same approved boundaries.
 
 ```text
 Browser
@@ -21,7 +21,7 @@ Node.js API
                                                 PostgreSQL
 ```
 
-In Phase 1, the browser calls only `GET /api/health`; Prisma and PostgreSQL infrastructure exist, but application models and database calls do not.
+The browser currently calls `GET /api/health` and the Project endpoints under `/api/projects`. Project records persist in PostgreSQL. Other domain modules remain planned.
 
 ## Monorepo components
 
@@ -57,9 +57,9 @@ The intended request path is:
 5. **Prisma:** executes typed database operations.
 6. **PostgreSQL:** stores relational data and enforces supported constraints.
 
-The health endpoint has no request data to validate and no persistence requirement, so it uses route, controller, and service layers only.
+The health endpoint has no request data to validate and no persistence requirement, so it uses route, controller, and service layers only. Project write and identifier routes use Zod validation before their controllers call the Project service and Prisma client.
 
-### PostgreSQL — planned persistence
+### PostgreSQL — persistence
 
 Responsibilities:
 
@@ -68,7 +68,7 @@ Responsibilities:
 - Execute transactions atomically.
 - Store timestamps consistently in UTC.
 
-Docker Compose defines the local database service. Docker was unavailable during the initial Phase 1 implementation, so the service was configured but not started or verified.
+Docker Compose defines the local PostgreSQL 16 service. In Phase 2 the container was started, reported healthy, accepted connections, and received the reviewed Project migration.
 
 ### Documentation and tests
 
@@ -80,14 +80,14 @@ Docker Compose defines the local database service. Docker was unavailable during
 
 ## Communication flow
 
-For a future validated command such as creating a requirement:
+For the implemented create-project command:
 
 1. The user submits a form in the browser.
 2. The frontend performs helpful client-side checks and sends JSON to the API.
 3. API middleware parses the request; the route's Zod schema rejects malformed or unexpected data.
-4. The controller passes validated values to the requirement service.
-5. The service applies project ownership and other business rules.
-6. Prisma writes through a transaction when related records, such as change history, must remain consistent.
+4. The controller passes validated values to the Project service.
+5. The service applies defaults and asks Prisma to create the Project record.
+6. PostgreSQL applies enum, nullability, length, and formatting constraints before committing the record.
 7. The API returns a stable JSON representation and appropriate HTTP status.
 8. The frontend updates the view or presents a useful error.
 

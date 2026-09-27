@@ -57,7 +57,7 @@ reqflow/
 - Docker Desktop or another Docker Compose installation for PostgreSQL
 - Git
 
-Node.js 24 is supported by the selected dependencies. Docker is required only when work begins against PostgreSQL; the Phase 1 health endpoint does not query the database.
+Node.js 24 is supported by the selected dependencies. Docker PostgreSQL is required for Project management and its integration tests; the health endpoint remains database-independent.
 
 ## Installation
 
@@ -71,13 +71,18 @@ Node.js 24 is supported by the selected dependencies. Docker is required only wh
 
    Use `npm install` only when intentionally updating dependencies and the committed `package-lock.json`.
 
-4. When Docker is available, start PostgreSQL:
+4. Start PostgreSQL:
 
    ```bash
    docker compose up -d postgres
    ```
 
-5. After database models are introduced in a later phase, generate the Prisma client with `npm run prisma:generate` and apply the documented migration workflow. Phase 1 intentionally has no models or migration.
+5. Generate the Prisma client and apply the committed migrations:
+
+   ```bash
+   npm run prisma:generate
+   npm run prisma:migrate:deploy
+   ```
 
 ## Run the application
 
@@ -112,11 +117,11 @@ npm run build
 npm run prisma:validate
 ```
 
-The current automated suite checks the API health contract with Vitest and Supertest. End-to-end Playwright coverage is planned only when real user workflows exist.
+The current automated suite checks the API health contract and the PostgreSQL-backed Project lifecycle with Vitest and Supertest. End-to-end Playwright coverage is planned for a later phase with broader user journeys.
 
 ## Current implementation status
 
-Implemented in Phase 1:
+Implemented through Phase 2:
 
 - npm-workspaces monorepo with strict shared TypeScript rules
 - Responsive React application shell with Dashboard, Projects, and Requirements routes
@@ -126,18 +131,21 @@ Implemented in Phase 1:
 - Automated health endpoint test
 - PostgreSQL Docker Compose configuration and Prisma scaffolding
 - Initial BA, architecture, database, testing, and repository guidance
+- PostgreSQL `projects` table with a reviewed Prisma migration
+- Validated Project REST API for create, list, view, update, and delete
+- Responsive Projects UI backed by persisted database records
+- Database-backed Project API integration tests
 
 Not yet implemented:
 
-- Database application models and migrations
-- Project, requirement, acceptance criterion, test case, link, or history CRUD
+- Requirement, acceptance criterion, test case, traceability-link, or history models and CRUD
 - Search, filtering, and dashboard business statistics
 - Authentication, authorization, deployment, or end-to-end tests
 
 ## Roadmap
 
 1. **Phase 1 — Foundation:** application shell, health endpoint, infrastructure, documentation, and baseline tests.
-2. **Phase 2 — To be approved:** refine the domain model and deliver the next explicitly assigned vertical slice with migrations, validation, services, UI, and tests.
+2. **Phase 2 — Project management:** PostgreSQL Project model and migration, validated REST API, persisted Projects UI, and integration tests.
 3. **Later MVP phases:** incrementally add requirement detail, acceptance criteria, tests, traceability, search, history, and source-derived statistics.
 4. **Future scope:** consider identity, collaboration, integrations, and production operations only after the MVP is validated.
 

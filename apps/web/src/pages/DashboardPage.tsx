@@ -68,18 +68,18 @@ export function DashboardPage() {
         <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-panel">
           <div className="flex items-center justify-between">
             <span className="grid h-10 w-10 place-items-center rounded-xl bg-slate-100 text-sm font-bold text-slate-600">03</span>
-            <span className="rounded-full bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-700">Planned</span>
+            <span className="rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700">Available</span>
           </div>
-          <h3 className="mt-5 font-semibold text-ink">Product workflows</h3>
-          <p className="mt-2 text-sm leading-6 text-slate-500">Project and requirement operations begin in a later approved phase.</p>
+          <h3 className="mt-5 font-semibold text-ink">Project management</h3>
+          <p className="mt-2 text-sm leading-6 text-slate-500">Create, update, and delete project records persisted in PostgreSQL.</p>
         </article>
       </section>
 
       <section className="mt-6 overflow-hidden rounded-2xl border border-brand-100 bg-brand-50 p-6 sm:p-8" aria-labelledby="current-scope-heading">
         <div className="max-w-3xl">
           <p className="text-xs font-semibold uppercase tracking-wider text-brand-700">Current scope</p>
-          <h3 id="current-scope-heading" className="mt-2 text-xl font-semibold text-ink">Foundation before features</h3>
-          <p className="mt-3 text-sm leading-6 text-slate-600">This screen intentionally avoids invented project metrics. The current release proves the frontend-to-backend connection and establishes a maintainable structure for the real workflows that follow.</p>
+          <h3 id="current-scope-heading" className="mt-2 text-xl font-semibold text-ink">The first persistent workflow</h3>
+          <p className="mt-3 text-sm leading-6 text-slate-600">Project management is now backed by PostgreSQL. This screen still avoids invented metrics; dashboard statistics will appear only when real requirement data exists.</p>
         </div>
       </section>
     </>
