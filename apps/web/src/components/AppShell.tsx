@@ -26,7 +26,7 @@ export function AppShell() {
               <span className="block text-[11px] text-slate-400">Requirements workspace</span>
             </span>
           </NavLink>
-          <span className="rounded-full border border-amber-400/30 bg-amber-400/10 px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-amber-300 lg:hidden">Alpha</span>
+          <span className="rounded-full border border-emerald-400/30 bg-emerald-400/10 px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-emerald-300 lg:hidden">Phase 4</span>
         </div>
 
         <nav aria-label="Primary navigation" className="flex gap-2 overflow-x-auto px-4 pb-4 lg:block lg:space-y-1 lg:px-3 lg:pb-0 lg:pt-5">
@@ -52,9 +52,9 @@ export function AppShell() {
         <div className="mx-4 mt-8 hidden rounded-xl border border-slate-800 bg-slate-900 p-4 lg:block">
           <div className="mb-2 flex items-center gap-2">
             <span className="h-2 w-2 rounded-full bg-amber-400" aria-hidden="true" />
-            <p className="text-xs font-semibold uppercase tracking-wider text-amber-300">In development</p>
+            <p className="text-xs font-semibold uppercase tracking-wider text-amber-300">MVP in development</p>
           </div>
-          <p className="text-xs leading-5 text-slate-400">Phase 1 establishes the application foundation. Product workflows are not implemented yet.</p>
+          <p className="text-xs leading-5 text-slate-400">Implemented through Phase 4: projects, requirements, and acceptance criteria. Later MVP workflows remain planned.</p>
         </div>
       </aside>
 
