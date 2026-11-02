@@ -2,7 +2,7 @@
 
 ## Status and scope
 
-This document describes the foundation plus the implemented Project- and Requirement-management slices through Phase 3. Components not yet implemented are labelled as planned.
+This document describes the foundation plus the implemented Project, Requirement, and Acceptance Criteria management slices through Phase 4. Components not yet implemented are labelled as planned.
 
 ## System context
 
@@ -21,7 +21,17 @@ Node.js API
                                                 PostgreSQL
 ```
 
-The browser currently calls `GET /api/health`, Project endpoints under `/api/projects`, and project-scoped Requirement endpoints under `/api/projects/:projectId/requirements`. Project and Requirement records persist in PostgreSQL. Other domain modules remain planned.
+The browser currently calls `GET /api/health`, Project endpoints under `/api/projects`, project-scoped Requirement endpoints under `/api/projects/:projectId/requirements`, and Requirement-scoped Acceptance Criteria endpoints under `/api/projects/:projectId/requirements/:requirementId/acceptance-criteria`. These records persist in PostgreSQL. Other domain modules remain planned.
+
+### Implemented Acceptance Criteria HTTP contracts
+
+- `GET /api/projects/:projectId/requirements/:requirementId/acceptance-criteria` lists criteria in their persisted order.
+- `POST /api/projects/:projectId/requirements/:requirementId/acceptance-criteria` creates a criterion and allocates its stable readable ID.
+- `PATCH /api/projects/:projectId/requirements/:requirementId/acceptance-criteria/:criterionId` updates criterion text without changing its readable ID or order.
+- `DELETE /api/projects/:projectId/requirements/:requirementId/acceptance-criteria/:criterionId` deletes one criterion after UI confirmation.
+- `PUT /api/projects/:projectId/requirements/:requirementId/acceptance-criteria/order` accepts every owned criterion ID exactly once and atomically persists the order.
+
+All path and body input is validated with Zod. Project/Requirement ownership is checked by the service, and the API uses the existing `{ data: ... }` success and `{ error: { code, message, details? } }` error conventions.
 
 ## Monorepo components
 
@@ -36,6 +46,8 @@ Responsibilities:
 - Avoid embedding business rules that must remain consistent across clients.
 
 Vite provides the development server and production bundle. Its development proxy forwards `/api` calls to the local API, which avoids hard-coding a second origin in UI code.
+
+Both development servers bind to the IPv4 loopback interface only. Vite reads `API_PORT` from the repository `.env` file when configuring its proxy, so a local port change remains consistent without exposing the unauthenticated API to the network.
 
 ### `apps/api` — backend
 
@@ -68,7 +80,7 @@ Responsibilities:
 - Execute transactions atomically.
 - Store timestamps consistently in UTC.
 
-Docker Compose defines the local PostgreSQL 16 service. It has received reviewed migrations for Projects and Requirements, including relational constraints and indexes.
+Docker Compose defines the local PostgreSQL 16 service. It has received reviewed migrations for Projects, Requirements, and Acceptance Criteria, including relational constraints and indexes.
 
 ### Documentation and tests
 

@@ -1,7 +1,7 @@
 import { app } from './app.js';
 import { env } from './config/env.js';
 
-const server = app.listen(env.API_PORT, () => {
+const server = app.listen(env.API_PORT, '127.0.0.1', () => {
   console.log(`ReqFlow API listening on http://localhost:${env.API_PORT}`);
 });
 

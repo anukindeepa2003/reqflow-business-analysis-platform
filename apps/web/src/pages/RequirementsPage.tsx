@@ -17,6 +17,7 @@ import {
   type RequirementType,
 } from '../api/requirements';
 import { PageHeader } from '../components/PageHeader';
+import { AcceptanceCriteriaPanel } from '../components/acceptance-criteria/AcceptanceCriteriaPanel';
 import { RequirementForm } from '../components/requirements/RequirementForm';
 import { RequirementList } from '../components/requirements/RequirementList';
 
@@ -28,6 +29,7 @@ export function RequirementsPage() {
   const [filters, setFilters] = useState<RequirementFilters>({});
   const [searchDraft, setSearchDraft] = useState('');
   const [editingRequirement, setEditingRequirement] = useState<Requirement | null>(null);
+  const [criteriaRequirement, setCriteriaRequirement] = useState<Requirement | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [deletingRequirementId, setDeletingRequirementId] = useState<string | null>(null);
@@ -86,6 +88,7 @@ export function RequirementsPage() {
   function chooseProject(projectId: string) {
     setSelectedProjectId(projectId);
     setEditingRequirement(null);
+    setCriteriaRequirement(null);
     setFormError(null);
     setSearchParams(projectId ? { projectId } : {}, { replace: true });
   }
@@ -121,6 +124,7 @@ export function RequirementsPage() {
       await deleteRequirement(selectedProjectId, requirement.id);
       setRequirements((current) => current.filter((item) => item.id !== requirement.id));
       if (editingRequirement?.id === requirement.id) setEditingRequirement(null);
+      if (criteriaRequirement?.id === requirement.id) setCriteriaRequirement(null);
     } catch (error) {
       setLoadError(error instanceof Error ? error.message : 'The requirement could not be deleted.');
     } finally {
@@ -140,7 +144,7 @@ export function RequirementsPage() {
       <PageHeader
         eyebrow="Requirements workspace"
         title="Requirements"
-        description="Capture, classify, prioritize, search, and track project requirements. Acceptance criteria, tests, and change history remain planned for later phases."
+        description="Capture, classify, prioritize, search, and track project requirements and their acceptance criteria. Test cases and change history remain planned for later phases."
       />
 
       <section className="mb-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-panel" aria-labelledby="project-context-title">
@@ -164,6 +168,14 @@ export function RequirementsPage() {
         <RequirementForm requirement={editingRequirement} projectSelected={Boolean(selectedProjectId)} isSaving={isSaving} error={formError} onSubmit={handleSubmit} onCancel={() => { setEditingRequirement(null); setFormError(null); }} />
 
         <div>
+          {criteriaRequirement ? (
+            <AcceptanceCriteriaPanel
+              projectId={selectedProjectId}
+              requirement={criteriaRequirement}
+              onClose={() => setCriteriaRequirement(null)}
+            />
+          ) : null}
+
           <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">Selected project</p>
@@ -186,7 +198,7 @@ export function RequirementsPage() {
             </form>
           </section>
 
-          {isLoading ? <div className="rounded-2xl border border-slate-200 bg-white px-6 py-14 text-center text-sm text-slate-500 shadow-panel" role="status">Loading requirements…</div> : <RequirementList requirements={requirements} deletingRequirementId={deletingRequirementId} onEdit={(requirement) => { setEditingRequirement(requirement); setFormError(null); window.scrollTo({ top: 0, behavior: 'smooth' }); }} onDelete={(requirement) => void handleDelete(requirement)} />}
+          {isLoading ? <div className="rounded-2xl border border-slate-200 bg-white px-6 py-14 text-center text-sm text-slate-500 shadow-panel" role="status">Loading requirements…</div> : <RequirementList requirements={requirements} deletingRequirementId={deletingRequirementId} onManageCriteria={(requirement) => { setCriteriaRequirement(requirement); setEditingRequirement(null); setFormError(null); }} onEdit={(requirement) => { setEditingRequirement(requirement); setCriteriaRequirement(null); setFormError(null); window.scrollTo({ top: 0, behavior: 'smooth' }); }} onDelete={(requirement) => void handleDelete(requirement)} />}
         </div>
       </div>
     </>

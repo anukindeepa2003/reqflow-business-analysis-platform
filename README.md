@@ -2,7 +2,7 @@
 
 **Requirements Management & Business Analysis Platform**
 
-ReqFlow is a portfolio application for centrally organizing software projects, requirements, acceptance criteria, test cases, traceability, and basic project insight. The repository is being delivered in controlled phases; the current implementation is the Phase 1 foundation, not a complete product.
+ReqFlow is a portfolio application for centrally organizing software projects, requirements, acceptance criteria, test cases, traceability, and basic project insight. The repository is being delivered in controlled phases; implementation currently extends through Phase 4 and is not yet the complete MVP.
 
 ## Fictional business context
 
@@ -92,7 +92,7 @@ Start the frontend and backend together:
 npm run dev
 ```
 
-Open `http://localhost:5173`. The API listens on `http://localhost:3000`, and `GET http://localhost:3000/api/health` returns its health status.
+Open `http://localhost:5173`. The API listens locally on `http://127.0.0.1:3002`, and `GET http://127.0.0.1:3002/api/health` returns its health status. The non-default API port avoids conflicts with other common local development servers; Vite reads `API_PORT` from `.env` for its `/api` proxy.
 
 Run the apps separately when debugging:
 
@@ -117,11 +117,11 @@ npm run build
 npm run prisma:validate
 ```
 
-The current automated suite checks the API health contract plus the PostgreSQL-backed Project and Requirement lifecycles with Vitest and Supertest. End-to-end Playwright coverage is planned for a later phase with broader user journeys.
+The current automated suite checks the API health contract plus the PostgreSQL-backed Project, Requirement, and Acceptance Criterion lifecycles with Vitest and Supertest. End-to-end Playwright coverage is planned for a later phase with broader user journeys.
 
 ## Current implementation status
 
-Implemented through Phase 3:
+Implemented through Phase 4:
 
 - npm-workspaces monorepo with strict shared TypeScript rules
 - Responsive React application shell with Dashboard, Projects, and Requirements routes
@@ -140,10 +140,15 @@ Implemented through Phase 3:
 - Validated Requirement REST API for create, list, detail, update, and delete
 - Project-scoped requirement search and type, MoSCoW-priority, and status filters
 - Responsive Requirements UI and database-backed integration tests
+- PostgreSQL Acceptance Criterion model owned by a Requirement with cascade deletion
+- Stable requirement-scoped identifiers such as `AC-01` with persistent allocation
+- Validated Acceptance Criteria REST API for create, list, update, delete, and ordering
+- Responsive Acceptance Criteria UI with explicit up/down ordering controls
+- Database-backed Acceptance Criteria integration tests
 
 Not yet implemented:
 
-- Acceptance criterion, test case, traceability-link, or change-history models and CRUD
+- Test case, traceability-link, or change-history models and CRUD
 - Traceability reporting and dashboard business statistics
 - Authentication, authorization, deployment, or end-to-end tests
 
@@ -152,8 +157,9 @@ Not yet implemented:
 1. **Phase 1 — Foundation:** application shell, health endpoint, infrastructure, documentation, and baseline tests.
 2. **Phase 2 — Project management:** PostgreSQL Project model and migration, validated REST API, persisted Projects UI, and integration tests.
 3. **Phase 3 — Requirement management:** project-owned requirements, stable readable IDs, classification, MoSCoW priority, lifecycle status, search/filtering, UI, and tests.
-4. **Later MVP phases:** incrementally add acceptance criteria, tests, traceability, history, reports, and source-derived statistics.
-5. **Future scope:** consider identity, collaboration, integrations, and production operations only after the MVP is validated.
+4. **Phase 4 — Acceptance criteria management:** requirement-owned criteria, stable readable IDs, explicit ordering, CRUD UI/API, integrity constraints, and tests.
+5. **Later MVP phases:** incrementally add test cases, traceability, history, reports, and source-derived statistics.
+6. **Future scope:** consider identity, collaboration, integrations, and production operations only after the MVP is validated.
 
 No work proceeds beyond an explicitly approved phase.
 

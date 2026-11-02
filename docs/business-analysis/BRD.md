@@ -19,7 +19,7 @@ Detailed functional and non-functional software requirements will be developed a
 | ID | Business requirement | Rationale | MVP status |
 | --- | --- | --- | --- |
 | BR-001 | The solution shall provide a centralized workspace for project requirement information. | Reduces fragmentation across simulated documents and spreadsheets. | Partially implemented: projects and requirements |
-| BR-002 | The solution shall preserve relationships among projects, requirements, acceptance criteria, and test cases. | Supports context and end-to-end traceability. | Partially implemented: Project–Requirement ownership |
+| BR-002 | The solution shall preserve relationships among projects, requirements, acceptance criteria, and test cases. | Supports context and end-to-end traceability. | Partially implemented: Project–Requirement–Acceptance Criterion ownership |
 | BR-003 | The solution shall enable requirements to be classified, prioritized, and tracked by status. | Supports analysis and delivery planning. | Implemented for Requirements |
 | BR-004 | The solution shall show which test cases are linked to each requirement. | Makes test coverage inspectable. | Planned |
 | BR-005 | The solution shall retain a basic record of material requirement changes. | Supports auditability and impact analysis. | Planned |
@@ -40,7 +40,7 @@ Detailed functional and non-functional software requirements will be developed a
 8. Basic project statistics calculated from persisted records.
 9. Basic change history for requirement updates.
 
-Phase 1 implemented the foundation. Phase 2 implemented persisted Project management. Phase 3 implements project-owned Requirement creation, listing, detail API access, editing, confirmed deletion, functional/non-functional classification, MoSCoW priority, simulated lifecycle status, stable readable identifiers, and search/filtering. Acceptance criteria, test cases, traceability, and change history remain planned.
+Phase 1 implemented the foundation. Phase 2 implemented persisted Project management. Phase 3 implemented project-owned Requirement creation, listing, detail API access, editing, confirmed deletion, functional/non-functional classification, MoSCoW priority, simulated lifecycle status, stable readable identifiers, and search/filtering. Phase 4 implements requirement-owned Acceptance Criteria creation, listing, editing, confirmed deletion, stable readable identifiers, and explicit ordering. Test cases, traceability, and change history remain planned.
 
 ## 5. Out-of-scope features
 

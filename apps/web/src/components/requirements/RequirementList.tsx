@@ -8,6 +8,7 @@ import type {
 interface RequirementListProps {
   requirements: Requirement[];
   deletingRequirementId: string | null;
+  onManageCriteria: (requirement: Requirement) => void;
   onEdit: (requirement: Requirement) => void;
   onDelete: (requirement: Requirement) => void;
 }
@@ -32,7 +33,7 @@ const statusPresentation: Record<RequirementStatus, { label: string; className: 
   DEFERRED: { label: 'Deferred', className: 'bg-violet-50 text-violet-700' },
 };
 
-export function RequirementList({ requirements, deletingRequirementId, onEdit, onDelete }: RequirementListProps) {
+export function RequirementList({ requirements, deletingRequirementId, onManageCriteria, onEdit, onDelete }: RequirementListProps) {
   if (requirements.length === 0) {
     return (
       <section className="rounded-2xl border border-dashed border-slate-300 bg-white px-6 py-14 text-center shadow-panel">
@@ -62,7 +63,8 @@ export function RequirementList({ requirements, deletingRequirementId, onEdit, o
                 <h3 className="mt-4 text-lg font-semibold text-ink">{requirement.title}</h3>
                 <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-slate-500">{requirement.description}</p>
               </div>
-              <div className="flex shrink-0 gap-2">
+              <div className="flex shrink-0 flex-wrap gap-2 sm:justify-end">
+                <button type="button" onClick={() => onManageCriteria(requirement)} disabled={isDeleting} className="rounded-lg border border-brand-200 px-3 py-2 text-sm font-semibold text-brand-700 hover:bg-brand-50 disabled:opacity-50">Acceptance criteria</button>
                 <button type="button" onClick={() => onEdit(requirement)} disabled={isDeleting} className="rounded-lg border border-slate-300 px-3 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-50 disabled:opacity-50">Edit</button>
                 <button type="button" onClick={() => onDelete(requirement)} disabled={isDeleting} className="rounded-lg border border-rose-200 px-3 py-2 text-sm font-semibold text-rose-600 hover:bg-rose-50 disabled:opacity-50">{isDeleting ? 'Deleting…' : 'Delete'}</button>
               </div>

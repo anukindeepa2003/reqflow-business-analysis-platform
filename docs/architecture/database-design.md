@@ -2,7 +2,7 @@
 
 ## Status
 
-Phase 3 implements the PostgreSQL `projects` and `requirements` tables, their enum types, integrity constraints, relationships, supporting indexes, and reviewed Prisma migrations. Acceptance criterion, test case, traceability, and change-history entities remain planned and are not represented as implemented.
+Phase 4 implements the PostgreSQL `projects`, `requirements`, and `acceptance_criteria` tables, their enum types, integrity constraints, relationships, supporting indexes, and reviewed Prisma migrations. Test case, traceability, and change-history entities remain planned and are not represented as implemented.
 
 ## Conventions
 
@@ -34,15 +34,17 @@ Phase 3 implements the PostgreSQL `projects` and `requirements` tables, their en
 - **MoSCoW priority values:** `MUST`, `SHOULD`, `COULD`, and `WONT` for this release.
 - **Status values:** `DRAFT`, `READY`, `IN_PROGRESS`, `IMPLEMENTED`, and `DEFERRED`. Statuses are simulated internal tracking labels, not stakeholder approvals.
 - **Integrity and indexes:** `(project_id, sequence_number)` is unique; project/status/date, project/type, and project/priority indexes support current list and filter patterns.
-- **Relationships:** Belongs to exactly one implemented Project. Acceptance criteria, change records, and test links remain planned.
+- **Relationships:** Belongs to exactly one implemented Project and owns zero or more Acceptance Criteria. Change records and test links remain planned.
 
 ### AcceptanceCriterion
 
-- **Primary key:** UUID `id`
-- **Foreign key:** `requirementId -> Requirement.id`
-- **Purpose:** Captures a verifiable condition for a requirement.
-- **Likely attributes:** description, position/order, timestamps.
-- **Relationships:** Belongs to exactly one requirement.
+- **Implementation:** Implemented in migration `20261102044949_add_acceptance_criteria`.
+- **Primary key:** UUID `id`, generated independently from the readable identifier.
+- **Foreign key:** `requirement_id -> requirements.id` with `ON DELETE CASCADE`.
+- **Purpose:** Captures one observable, verifiable condition for a requirement.
+- **Attributes:** positive requirement-scoped `sequence_number`, positive mutable `position`, required trimmed `description` (5–2,000 characters), and timestamps.
+- **Integrity:** `(requirement_id, sequence_number)` and `(requirement_id, position)` are unique. Database checks enforce positive values, description length, and trimmed text.
+- **Relationships:** Belongs to exactly one implemented Requirement.
 
 ### TestCase
 
@@ -87,11 +89,15 @@ Requirement 1 ----- * RequirementChange
 
 ## Readable identifiers
 
-UUIDs remain the persistent keys. Requirements expose `REQ-` plus their persisted, project-scoped sequence number padded to four digits, for example `REQ-0001`. Project creation initializes `next_requirement_number` to 1. Requirement creation atomically increments that counter and stores the allocated value; deletion does not decrement it. Consequently, identifiers are not derived from row counts, are not reused after deletion, and do not change when requirement text changes. Test-case identifier allocation remains unfinalized.
+UUIDs remain the persistent keys. Requirements expose `REQ-` plus their persisted, project-scoped sequence number padded to four digits, for example `REQ-0001`. Project creation initializes `next_requirement_number` to 1. Requirement creation atomically increments that counter and stores the allocated value; deletion does not decrement it.
+
+Acceptance Criteria expose `AC-` plus their persisted, requirement-scoped sequence number padded to two digits, for example `AC-01`. Each Requirement initializes `next_acceptance_criterion_number` to 1. Criterion creation atomically increments that counter and stores the allocated value. Reordering changes only `position`, and deletion does not decrement the allocation counter. Consequently, Requirement and Acceptance Criterion identifiers are not derived from row counts, are not reused after deletion, and do not change when text or ordering changes. Test-case identifier allocation remains unfinalized.
 
 ## Transaction boundaries
 
 - Requirement creation increments the owning Project counter and inserts the Requirement inside one short Prisma transaction.
+- Acceptance Criterion creation increments the owning Requirement counter and inserts the Criterion inside one short Prisma transaction.
+- Acceptance Criterion reordering verifies the exact owned set, then assigns temporary and final positions in a short transaction using a consistent identifier order to reduce deadlock risk.
 - Updating a requirement and inserting its future `RequirementChange` records must occur in one database transaction once history is implemented.
 - Creating a requirement/test link must validate project ownership and create the junction record within one transaction where required to avoid time-of-check/time-of-use inconsistencies.
 - Multi-record deletes must either complete fully or roll back.
@@ -107,13 +113,13 @@ UUIDs remain the persistent keys. Requirements expose `REQ-` plus their persiste
 
 ## Project deletion policy
 
-The implemented policy is an explicit, confirmed hard delete for local test/portfolio data. The UI names the project and warns that deletion is permanent; the API exposes only an individual `DELETE /api/projects/:projectId` operation and no broad bulk-delete endpoint. PostgreSQL now cascades Project deletion to its Requirements through the implemented foreign key.
+The implemented policy is an explicit, confirmed hard delete for local test/portfolio data. The UI names the project and warns that deletion is permanent; the API exposes only an individual `DELETE /api/projects/:projectId` operation and no broad bulk-delete endpoint. PostgreSQL cascades Project deletion to its Requirements and Requirement deletion to its Acceptance Criteria through implemented foreign keys.
 
-Future acceptance criteria, test cases, traceability links, and change records must define and test their own cascade/restrict behavior before they are added. This hard-delete policy is not automatically suitable for a regulated or collaborative system, where archival, retention, backup, and audit requirements would need stakeholder and legal input.
+Future test cases, traceability links, and change records must define and test their own cascade/restrict behavior before they are added. This hard-delete policy is not automatically suitable for a regulated or collaborative system, where archival, retention, backup, and audit requirements would need stakeholder and legal input.
 
 ## Decisions not finalized
 
-- Exact fields, lengths, and optionality for entities other than Project and Requirement
+- Exact fields, lengths, and optionality for entities other than Project, Requirement, and AcceptanceCriterion
 - Test case status vocabulary and step representation
 - Junction-table primary key strategy and database enforcement of project equality
 - Test-case sequence allocation and readable-key prefixes

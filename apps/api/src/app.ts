@@ -1,5 +1,6 @@
 import cors from 'cors';
 import express from 'express';
+import { acceptanceCriterionRouter } from './routes/acceptance-criterion.routes.js';
 import { env } from './config/env.js';
 import { errorHandler } from './middleware/error-handler.js';
 import { healthRouter } from './routes/health.routes.js';
@@ -15,6 +16,10 @@ app.use(express.json({ limit: '1mb' }));
 app.use('/api/health', healthRouter);
 app.use('/api/projects', projectRouter);
 app.use('/api/projects/:projectId/requirements', requirementRouter);
+app.use(
+  '/api/projects/:projectId/requirements/:requirementId/acceptance-criteria',
+  acceptanceCriterionRouter,
+);
 
 app.use((_request, response) => {
   response.status(404).json({
