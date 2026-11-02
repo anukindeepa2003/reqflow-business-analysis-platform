@@ -7,5 +7,7 @@ Current automated coverage includes:
 - A Supertest health-endpoint contract test.
 - A PostgreSQL-backed Project API integration test covering create, list, detail, update, delete, and the not-found result after deletion.
 - Project validation tests for malformed payloads and identifiers.
+- PostgreSQL-backed Requirement API integration tests covering project-scoped create, list, detail, update, delete, filtering, search, validation, and missing-project behavior.
+- Readable-identifier tests proving sequential allocation and non-reuse after deletion.
 
-Project integration tests create uniquely identified temporary data and remove it before disconnecting. Docker PostgreSQL must be running for the Project API tests. Playwright remains intentionally deferred until a later phase with broader user journeys.
+Database integration tests create temporary projects and requirements and remove them before disconnecting. Files run serially because they share one local integration database. Docker PostgreSQL must be running for Project and Requirement API tests. Playwright remains intentionally deferred until a later phase with broader user journeys.

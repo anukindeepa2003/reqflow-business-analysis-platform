@@ -4,6 +4,7 @@ import { env } from './config/env.js';
 import { errorHandler } from './middleware/error-handler.js';
 import { healthRouter } from './routes/health.routes.js';
 import { projectRouter } from './routes/project.routes.js';
+import { requirementRouter } from './routes/requirement.routes.js';
 
 export const app = express();
 
@@ -13,6 +14,7 @@ app.use(express.json({ limit: '1mb' }));
 
 app.use('/api/health', healthRouter);
 app.use('/api/projects', projectRouter);
+app.use('/api/projects/:projectId/requirements', requirementRouter);
 
 app.use((_request, response) => {
   response.status(404).json({

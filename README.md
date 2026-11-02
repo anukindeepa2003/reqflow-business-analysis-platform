@@ -117,11 +117,11 @@ npm run build
 npm run prisma:validate
 ```
 
-The current automated suite checks the API health contract and the PostgreSQL-backed Project lifecycle with Vitest and Supertest. End-to-end Playwright coverage is planned for a later phase with broader user journeys.
+The current automated suite checks the API health contract plus the PostgreSQL-backed Project and Requirement lifecycles with Vitest and Supertest. End-to-end Playwright coverage is planned for a later phase with broader user journeys.
 
 ## Current implementation status
 
-Implemented through Phase 2:
+Implemented through Phase 3:
 
 - npm-workspaces monorepo with strict shared TypeScript rules
 - Responsive React application shell with Dashboard, Projects, and Requirements routes
@@ -135,19 +135,25 @@ Implemented through Phase 2:
 - Validated Project REST API for create, list, view, update, and delete
 - Responsive Projects UI backed by persisted database records
 - Database-backed Project API integration tests
+- PostgreSQL Requirement model with project ownership and cascade deletion
+- Stable project-scoped identifiers such as `REQ-0001` allocated transactionally
+- Validated Requirement REST API for create, list, detail, update, and delete
+- Project-scoped requirement search and type, MoSCoW-priority, and status filters
+- Responsive Requirements UI and database-backed integration tests
 
 Not yet implemented:
 
-- Requirement, acceptance criterion, test case, traceability-link, or history models and CRUD
-- Search, filtering, and dashboard business statistics
+- Acceptance criterion, test case, traceability-link, or change-history models and CRUD
+- Traceability reporting and dashboard business statistics
 - Authentication, authorization, deployment, or end-to-end tests
 
 ## Roadmap
 
 1. **Phase 1 — Foundation:** application shell, health endpoint, infrastructure, documentation, and baseline tests.
 2. **Phase 2 — Project management:** PostgreSQL Project model and migration, validated REST API, persisted Projects UI, and integration tests.
-3. **Later MVP phases:** incrementally add requirement detail, acceptance criteria, tests, traceability, search, history, and source-derived statistics.
-4. **Future scope:** consider identity, collaboration, integrations, and production operations only after the MVP is validated.
+3. **Phase 3 — Requirement management:** project-owned requirements, stable readable IDs, classification, MoSCoW priority, lifecycle status, search/filtering, UI, and tests.
+4. **Later MVP phases:** incrementally add acceptance criteria, tests, traceability, history, reports, and source-derived statistics.
+5. **Future scope:** consider identity, collaboration, integrations, and production operations only after the MVP is validated.
 
 No work proceeds beyond an explicitly approved phase.
 

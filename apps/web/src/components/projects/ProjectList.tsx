@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import type { Project, ProjectStatus } from '../../api/projects';
 
 interface ProjectListProps {
@@ -53,6 +54,12 @@ export function ProjectList({ projects, deletingProjectId, onEdit, onDelete }: P
               </div>
 
               <div className="flex shrink-0 gap-2">
+                <Link
+                  to={`/requirements?projectId=${project.id}`}
+                  className="rounded-lg bg-brand-50 px-3 py-2 text-sm font-semibold text-brand-700 transition hover:bg-brand-100"
+                >
+                  Requirements
+                </Link>
                 <button
                   type="button"
                   onClick={() => onEdit(project)}

@@ -2,11 +2,11 @@
 
 ## Status and scope
 
-This document describes the foundation and the Phase 2 Project-management slice. Components not yet implemented are labelled as planned.
+This document describes the foundation plus the implemented Project- and Requirement-management slices through Phase 3. Components not yet implemented are labelled as planned.
 
 ## System context
 
-ReqFlow is a local-first browser application. A React single-page application sends HTTP requests to an Express REST API. The Project API uses Prisma to access PostgreSQL; later domain modules will follow the same approved boundaries.
+ReqFlow is a local-first browser application. A React single-page application sends HTTP requests to an Express REST API. The Project and Requirement APIs use Prisma to access PostgreSQL; later domain modules will follow the same approved boundaries.
 
 ```text
 Browser
@@ -21,7 +21,7 @@ Node.js API
                                                 PostgreSQL
 ```
 
-The browser currently calls `GET /api/health` and the Project endpoints under `/api/projects`. Project records persist in PostgreSQL. Other domain modules remain planned.
+The browser currently calls `GET /api/health`, Project endpoints under `/api/projects`, and project-scoped Requirement endpoints under `/api/projects/:projectId/requirements`. Project and Requirement records persist in PostgreSQL. Other domain modules remain planned.
 
 ## Monorepo components
 
@@ -68,7 +68,7 @@ Responsibilities:
 - Execute transactions atomically.
 - Store timestamps consistently in UTC.
 
-Docker Compose defines the local PostgreSQL 16 service. In Phase 2 the container was started, reported healthy, accepted connections, and received the reviewed Project migration.
+Docker Compose defines the local PostgreSQL 16 service. It has received reviewed migrations for Projects and Requirements, including relational constraints and indexes.
 
 ### Documentation and tests
 
@@ -80,14 +80,14 @@ Docker Compose defines the local PostgreSQL 16 service. In Phase 2 the container
 
 ## Communication flow
 
-For the implemented create-project command:
+For the implemented create-requirement command:
 
 1. The user submits a form in the browser.
 2. The frontend performs helpful client-side checks and sends JSON to the API.
 3. API middleware parses the request; the route's Zod schema rejects malformed or unexpected data.
-4. The controller passes validated values to the Project service.
-5. The service applies defaults and asks Prisma to create the Project record.
-6. PostgreSQL applies enum, nullability, length, and formatting constraints before committing the record.
+4. The controller passes validated values and project identifier to the Requirement service.
+5. A short Prisma transaction increments the Project's persistent counter and inserts the Requirement with its allocated sequence number.
+6. PostgreSQL applies ownership, uniqueness, enum, nullability, length, and formatting constraints before committing both changes.
 7. The API returns a stable JSON representation and appropriate HTTP status.
 8. The frontend updates the view or presents a useful error.
 

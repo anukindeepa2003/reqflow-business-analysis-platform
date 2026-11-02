@@ -17,14 +17,62 @@ enum ProjectStatus {
   @@map("project_status")
 }
 
+enum RequirementType {
+  FUNCTIONAL
+  NON_FUNCTIONAL
+
+  @@map("requirement_type")
+}
+
+enum RequirementPriority {
+  MUST
+  SHOULD
+  COULD
+  WONT
+
+  @@map("requirement_priority")
+}
+
+enum RequirementStatus {
+  DRAFT
+  READY
+  IN_PROGRESS
+  IMPLEMENTED
+  DEFERRED
+
+  @@map("requirement_status")
+}
+
 model Project {
-  id          String        @id @default(uuid()) @db.Uuid
-  name        String        @db.Text
-  description String?       @db.Text
-  status      ProjectStatus @default(PLANNING)
-  createdAt   DateTime      @default(now()) @map("created_at") @db.Timestamptz(3)
-  updatedAt   DateTime      @updatedAt @map("updated_at") @db.Timestamptz(3)
+  id                    String        @id @default(uuid()) @db.Uuid
+  name                  String        @db.Text
+  description           String?       @db.Text
+  status                ProjectStatus @default(PLANNING)
+  nextRequirementNumber Int           @default(1) @map("next_requirement_number")
+  createdAt             DateTime      @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt             DateTime      @updatedAt @map("updated_at") @db.Timestamptz(3)
+  requirements          Requirement[]
 
   @@index([status, updatedAt(sort: Desc)], map: "projects_status_updated_at_idx")
   @@map("projects")
+}
+
+model Requirement {
+  id             String              @id @default(uuid()) @db.Uuid
+  projectId      String              @map("project_id") @db.Uuid
+  sequenceNumber Int                 @map("sequence_number")
+  title          String              @db.Text
+  description    String              @db.Text
+  type           RequirementType
+  priority       RequirementPriority
+  status         RequirementStatus   @default(DRAFT)
+  createdAt      DateTime            @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt      DateTime            @updatedAt @map("updated_at") @db.Timestamptz(3)
+  project        Project             @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@unique([projectId, sequenceNumber], map: "requirements_project_sequence_key")
+  @@index([projectId, status, updatedAt(sort: Desc)], map: "requirements_project_status_updated_idx")
+  @@index([projectId, type], map: "requirements_project_type_idx")
+  @@index([projectId, priority], map: "requirements_project_priority_idx")
+  @@map("requirements")
 }
